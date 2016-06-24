@@ -1,1 +1,1 @@
-# vagrant-general
+# vagrant-base
