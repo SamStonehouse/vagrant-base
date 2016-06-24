@@ -1,0 +1,15 @@
+# Defaults for a machine configuration from hiera
+#
+# If your machine setup matches any of these settings then they don't have to be set, typically this is box, cpus and memory
+
+---
+name: default
+cpus: 1
+memory: 512
+box: ubuntu/trusty64
+sync: []
+ports: []
+ip: 192.168.56.2
+gui: false
+facts: 
+  role: ""

@@ -1,0 +1,84 @@
+# -*- mode: ruby -*-
+# # vi: set ft=ruby :
+
+Vagrant.require_version ">= 1.6.0"
+VAGRANTFILE_API_VERSION = "2"
+
+require 'yaml'
+
+machines = YAML.load_file('vagrant.yaml')
+default_config = YAML.load_file('defaults.yaml')
+
+$syncCount = 0
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+	machines.each do |machine|
+
+		machine_config = default_config.merge(machine)
+
+		config.vm.define machine["name"] do |mach|
+
+			# Create an empty map to store puppet facts
+			facts = machine_config['facts']
+
+			#Syncronise directories
+			machine['sync'].each do |sync|
+				sync_folder(mach, sync['source'], sync['target'])
+			end
+
+			#puts mach.vm.inspect
+			#puts config.vm.inspect
+
+			mach.vm.provider "virtualbox" do |v, override|
+
+				# Do an initial shell provision to update apt and ensure puppet is installed
+				override.vm.provision "shell", inline: <<-SHELL
+					sudo apt-get -y update
+					sudo apt-get -y install puppet
+				SHELL
+
+				# Do a puppet provision to install the rest of the software
+				override.vm.provision "puppet" do |puppet|
+					puppet.module_path = "puppet/modules"
+					puppet.manifests_path = "puppet/manifests"
+					puppet.manifest_file = "init.pp"
+					puppet.hiera_config_path  = "puppet/hiera.yaml"
+					puppet.working_directory = "/vagrant/puppet"
+					puppet.facter = facts
+					puppet.options = "--verbose --debug"
+				end
+			end
+
+			mach.vm.box = machine_config["box"]
+
+			# Assign a private networ
+			mach.vm.network "private_network", ip: machine_config["ip"]
+			machine['ports'].each do |port|
+				mach.vm.network "forwarded_port", guest: port['guest'], host: port['host']
+			end
+
+			mach.vm.provider :virtualbox do |vb|
+				vb.name = machine_config["name"]
+				vb.memory = machine_config["memory"]
+				vb.cpus = machine_config["cpus"]
+				vb.gui = machine_config["gui"]
+			end
+		end
+	end
+end
+
+def sync_folder(mach, source, target)
+	mach.vm.synced_folder source, target
+
+	syncName = "sync" + $syncCount.to_s
+	$syncCount += 1
+
+	mach.vm.provider "virtualbox" do |v, override|
+		override.vm.synced_folder source, target, disabled: true
+
+		v.customize ["sharedfolder", "add", :id, "--name", syncName, "--hostpath", (("//?/" + File.absolute_path(source)).gsub("/","\\"))]
+
+		override.vm.provision :shell, inline: "mkdir -p " + target
+		override.vm.provision :shell, inline: "mount -t vboxsf -o uid=`id -u vagrant`,gid=`getent group vagrant | cut -d: -f3` " + syncName + " " + target, run: "always"
+	end
+end
