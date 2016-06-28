@@ -11,5 +11,5 @@ sync: []
 ports: []
 ip: 192.168.56.2
 gui: false
-facts: 
-  role: ""
+facts:
+  role: empty

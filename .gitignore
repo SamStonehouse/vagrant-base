@@ -44,3 +44,7 @@ doc/
 .ruby-gemset
 .ruby-version
 .rvmrc
+
+# Our vagrant config
+
+vagrant.yaml

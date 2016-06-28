@@ -1,0 +1,7 @@
+---
+  databases:
+    'exampledb':
+      user: 'vagrant'
+      password: 'vagrant'
+      host: '%'
+      grant: 'ALL'

@@ -1,3 +1,0 @@
-class common::roles::desktop {
-
-}
