@@ -1,0 +1,8 @@
+{
+  "Modulefile": "5f412fbbb77540df3a72fc7cb0120895",
+  "README.md": "785f12f82d4016cec7efaf0863e93d45",
+  "manifests/init.pp": "4e6228f0fa3a2358040a2a3ae9580dd5",
+  "manifests/params.pp": "3f5743411c8ba3eaed352ba659e975a4",
+  "metadata.json": "03aa5ac66d1e27c972371897fdedca82",
+  "templates/default.conf.erb": "c84e872caf80fcd47702a872a4da0e9d"
+}
