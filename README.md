@@ -17,3 +17,5 @@ __empty__ - Nothing is installed, everything is default from the base VM (ubuntu
 __mysql__ - Installs a MySQL server and sets it running with the db/users in `puppet/hieradata/roles/mysql.yaml`, configured to allow remote connections by default.
 
 __rethinkdb__ - Installs rethinkdb server and sets it running listening for clients on port 28016
+
+__phpserver__ - Installs nginx and PHP, web root is '/var/share'
