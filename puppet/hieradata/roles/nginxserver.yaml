@@ -1,0 +1,4 @@
+---
+  nginx::nginx_vhosts:
+    'localhost':
+      www_root: '/var/share'
