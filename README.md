@@ -19,3 +19,5 @@ __mysql__ - Installs a MySQL server and sets it running with the db/users in `pu
 __rethinkdb__ - Installs rethinkdb server and sets it running listening for clients on port 28016
 
 __phpserver__ - Installs nginx and PHP, web root is '/var/share'
+
+__nginxserver__ - Installs nginx, web root is '/var/share'
